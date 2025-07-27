@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +25,15 @@ class DrishtiApp extends StatelessWidget {
       title: 'Agent Drishti Debug',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+        ),
       ),
       home: const AuthWrapper(),
     );
@@ -91,74 +99,173 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primary = Colors.blue[700];
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login to Agent Drishti'),
-      ),
+      backgroundColor: const Color(0xFFF5F3F8),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextField(
-                  controller: _emailCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _pwdCtrl,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                  ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () async {
-                          setState(() {
-                            _isLoading = true;
-                            _status = '';
-                          });
-                          String? result = await signIn(_emailCtrl.text, _pwdCtrl.text);
-                          setState(() {
-                            _isLoading = false;
-                            _status = result == null ? '' : 'Login failed: $result';
-                          });
+        child: SingleChildScrollView(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Card(
+              elevation: 12,
+              color: Colors.white,
+              shadowColor: primary?.withOpacity(0.25),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 36),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.visibility_rounded, color: primary, size: 40),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Agent Drishti",
+                      style: GoogleFonts.poppins(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Sign in to continue",
+                      style: GoogleFonts.poppins(fontSize: 17, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Email
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Email",
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 13, color: Colors.grey[700]))),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _emailCtrl,
+                      decoration: InputDecoration(
+                        hintText: "Enter your email",
+                        prefixIcon: Icon(Icons.mail_rounded, color: primary, size: 22),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      style: GoogleFonts.poppins(),
+                    ),
+
+                    const SizedBox(height: 18),
+                    // Password
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Password",
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 13, color: Colors.grey[700]))),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _pwdCtrl,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: "Enter your password",
+                        prefixIcon: Icon(Icons.lock_rounded, color: primary, size: 22),
+                      ),
+                      style: GoogleFonts.poppins(),
+                    ),
+
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primary,
+                          foregroundColor: Colors.white,
+                          textStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 17),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                          elevation: 4,
+                        ),
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                setState(() {
+                                  _isLoading = true;
+                                  _status = '';
+                                });
+                                String? result = await signIn(_emailCtrl.text, _pwdCtrl.text);
+                                setState(() {
+                                  _isLoading = false;
+                                  _status = result == null ? '' : 'Login failed: $result';
+                                });
+                              },
+                        child: _isLoading
+                            ? SizedBox(
+                                height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                            : const Text('Login'),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(child: Divider(thickness: 1, color: Colors.grey[300])),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text("OR", style: GoogleFonts.poppins(color: Colors.grey[500])),
+                        ),
+                        Expanded(child: Divider(thickness: 1, color: Colors.grey[300])),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: primary,
+                          side: BorderSide(color: primary!),
+                          textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 15),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                        ),
+                        icon: Image.asset('assets/google.png', height: 22, width: 22, errorBuilder: (_, __, ___) => Icon(Icons.g_mobiledata, color: Colors.red, size: 22)),
+                        label: const Text("Sign up with Google"),
+                        onPressed: () async {
+                          // Integrate Google sign-in here if needed
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Google Sign-in not implemented in this demo.")),
+                          );
                         },
-                  child: const Text('Login'),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: primary,
+                          side: BorderSide(color: primary),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                        ),
+                        onPressed: _isLoading
+                            ? null
+                            : () async {
+                                setState(() {
+                                  _isLoading = true;
+                                  _status = '';
+                                });
+                                String? result = await signUp(_emailCtrl.text, _pwdCtrl.text);
+                                setState(() {
+                                  _isLoading = false;
+                                  _status = result == null
+                                      ? 'Account created! You can login now.'
+                                      : 'Sign Up failed: $result';
+                                });
+                              },
+                        child: const Text("Create account"),
+                      ),
+                    ),
+                    if (_status.isNotEmpty) ...[
+                      const SizedBox(height: 18),
+                      Text(_status, style: GoogleFonts.poppins(color: Colors.red, fontWeight: FontWeight.w500)),
+                    ],
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () async {
-                          setState(() {
-                            _isLoading = true;
-                            _status = '';
-                          });
-                          String? result = await signUp(_emailCtrl.text, _pwdCtrl.text);
-                          setState(() {
-                            _isLoading = false;
-                            _status = result == null
-                                ? 'Account created! You can login now.'
-                                : 'Sign Up failed: $result';
-                          });
-                        },
-                  child: const Text('Sign Up'),
-                ),
-                if (_isLoading) const SizedBox(height: 20),
-                if (_isLoading) const CircularProgressIndicator(),
-                if (_status.isNotEmpty) ...[
-                  const SizedBox(height: 20),
-                  Text(_status, style: const TextStyle(color: Colors.red)),
-                ],
-              ],
+              ),
             ),
           ),
         ),
@@ -223,8 +330,8 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
       List<ChatMessage> messages = [];
 
       final msgSnapshot = await doc.reference.collection('messages')
-        .orderBy('timestamp')
-        .get();
+          .orderBy('timestamp')
+          .get();
 
       for (var msg in msgSnapshot.docs) {
         var data = msg.data();
@@ -543,23 +650,28 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
+    final bgColor = Color(0xFFF5F3F8);
     return Scaffold(
       key: _scaffoldKey,
       drawer: _buildDrawer(context, user),
-      backgroundColor: Colors.white,
+      backgroundColor: bgColor,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.menu, color: Colors.black),
           onPressed: _openDrawer,
         ),
-        title: const Text("Agent Drishti", style: TextStyle(color: Colors.black)),
+        title: Text(
+          "Agent Drishti",
+          style: GoogleFonts.poppins(
+            color: Colors.blue[700], fontWeight: FontWeight.bold, fontSize: 21),
+        ),
         centerTitle: true,
-        elevation: 1,
+        elevation: 2,
         backgroundColor: Colors.white,
         actions: [
           if (user != null)
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout, color: Colors.redAccent),
               tooltip: 'Sign Out',
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
@@ -577,24 +689,71 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return Align(
-                  alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(
-                      color: message.isUser ? Colors.blue[100] : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(12),
+            child: Container(
+              color: bgColor,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(20),
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  final isMe = message.isUser;
+                  return Align(
+                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment:
+                            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          if (!isMe)
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.blue[100],
+                              child: Icon(Icons.smart_toy_rounded, color: Colors.blue[700], size: 18),
+                            ),
+                          if (!isMe) SizedBox(width: 6),
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 260),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: isMe ? Colors.blue[50] : Colors.grey[100],
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(18),
+                                topRight: Radius.circular(18),
+                                bottomLeft: Radius.circular(isMe ? 18 : 2),
+                                bottomRight: Radius.circular(isMe ? 2 : 18),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              message.text,
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                color: isMe ? Colors.blue[900] : Colors.black87,
+                              ),
+                            ),
+                          ),
+                          if (isMe) SizedBox(width: 6),
+                          if (isMe)
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.blue[700],
+                              child: Icon(Icons.person, color: Colors.white, size: 18),
+                            ),
+                        ],
+                      ),
                     ),
-                    child: Text(message.text),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
           if (_isListening)
@@ -615,19 +774,29 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
               ),
             ),
           Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            margin: const EdgeInsets.all(18),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-              borderRadius: BorderRadius.circular(16),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 8,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: const InputDecoration(
-                      hintText: "Ask me anything",
+                    style: GoogleFonts.poppins(),
+                    decoration: InputDecoration(
+                      hintText: "Type your message…",
+                      hintStyle: GoogleFonts.poppins(color: Colors.grey),
                       border: InputBorder.none,
                       isCollapsed: true,
                     ),
@@ -638,11 +807,14 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
                 IconButton(
                   icon: Icon(
                     _isListening ? Icons.mic : Icons.mic_none,
-                    color: _isListening ? Colors.red : Colors.black,
+                    color: _isListening ? Colors.red : Colors.blueGrey,
                   ),
                   onPressed: _listen,
                 ),
-                IconButton(icon: const Icon(Icons.send), onPressed: _handleSend),
+                IconButton(
+                  icon: const Icon(Icons.send_rounded, color: Colors.blueAccent),
+                  onPressed: _handleSend,
+                ),
               ],
             ),
           ),
@@ -652,6 +824,7 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
   }
 
   Widget _buildDrawer(BuildContext context, User? user) {
+    final primary = Colors.blue[700];
     return Drawer(
       width: 280,
       child: Column(
@@ -660,8 +833,7 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
             padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
             child: Row(
               children: [
-                // Add logo if you want:
-                Image.asset('assets/images/logo.png', width: 40, height: 40, fit: BoxFit.contain),
+                Icon(Icons.visibility, color: primary, size: 34),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.close),
@@ -677,7 +849,7 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
               children: [
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.edit),
+                  leading: const Icon(Icons.add_comment_rounded, color: Colors.green),
                   title: const Text("New Chat"),
                   onTap: () {
                     _startNewSession();
@@ -686,13 +858,13 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.search),
+                  leading: const Icon(Icons.search, color: Colors.deepPurple),
                   title: const Text("Search chats"),
                   onTap: () => _navigateToSearch(context),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text("Chats", style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text("Sessions", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 ...chatSessions.asMap().entries.map((entry) => _chatTile(entry.key)),
               ],
@@ -705,7 +877,7 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
               children: [
                 const Icon(Icons.person),
                 const SizedBox(width: 8),
-                Text(user?.email ?? "User Name"),
+                Text(user?.email ?? "User Name", style: GoogleFonts.poppins()),
               ],
             ),
           ),
@@ -719,7 +891,7 @@ class _AgentDrishtiChatScreenState extends State<AgentDrishtiChatScreen> {
       builder: (context) {
         return ListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(chatSessions[index].title),
+          title: Text(chatSessions[index].title, style: GoogleFonts.poppins()),
           trailing: GestureDetector(
             onTapDown: (details) => _showPopupMenu(context, details.globalPosition, index),
             child: const Icon(Icons.more_vert),
@@ -781,6 +953,7 @@ class _ChatSearchPanelState extends State<ChatSearchPanel> {
             padding: const EdgeInsets.all(12.0),
             child: TextField(
               controller: _searchController,
+              style: GoogleFonts.poppins(),
               onChanged: (value) {
                 setState(() {
                   searchTerm = value;
@@ -814,7 +987,7 @@ class _ChatSearchPanelState extends State<ChatSearchPanel> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: const Icon(Icons.chat_bubble_outline),
-                        title: Text(filteredSessions[index].title),
+                        title: Text(filteredSessions[index].title, style: GoogleFonts.poppins()),
                         onTap: () {
                           Navigator.of(context).pop();
                         },
