@@ -1,0 +1,49 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "project-drishti-eagle-eye",
+          "appId": "1:576331613433:android:455ac7275a1bbe44f9ce28",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "project-drishti-eagle-eye",
+          "configurations": {
+            "android": "1:576331613433:android:455ac7275a1bbe44f9ce28",
+            "ios": "1:576331613433:ios:83b8ad45fd9d3554f9ce28",
+            "macos": "1:576331613433:ios:83b8ad45fd9d3554f9ce28",
+            "web": "1:576331613433:web:04def5ae5b1c0826f9ce28",
+            "windows": "1:576331613433:web:7d6fbcd44f1703a6f9ce28"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ],
+  "hosting": {
+    "public": "y",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "576331613433",
+    "project_id": "project-drishti-eagle-eye",
+    "storage_bucket": "project-drishti-eagle-eye.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576331613433:android:455ac7275a1bbe44f9ce28",
+        "android_client_info": {
+          "package_name": "com.example.agentic_ai_hackathon_eagle_eye"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-hpDG8s802kW7RksIGygjyRRib4IJCGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
